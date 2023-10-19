@@ -2,29 +2,73 @@
 <html>
 <head>
     <title>Azure Storage Cost Calculator</title>
+    <style>
+        .container {
+            width: 300px;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>Azure Storage Cost Calculator</h1>
-    <form id="costCalculator">
-        <label for="metadataCheckbox">Change tiers for Metadata:</label>
-        <input type="checkbox" id="metadataCheckbox">
-        <br>
-        <label for="blobCheckbox">Change tiers for Blobs:</label>
-        <input type="checkbox" id="blobCheckbox">
-        <br>
-        <label for="volume">No. of files:</label>
-        <input type="text" id="volume">
-        <br>
-        <label for="storageModel">Select storage model:</label>
-        <select id="storageModel">
-            <option value="1">1</option>
-            <option value="3">3</option>
-        </select>
-        <br>
-        <button type="button" onclick="calculateCost()">Calculate cost for changing tier</button>
-    </form>
-    <p id="result"></p>
+    <div class="container">
+        <h1>Azure Storage Cost Calculator</h1>
+        <form id="costCalculator">
+            <label for="metadataCheckbox">Change tiers for Metadata:</label>
+            <input type="checkbox" id="metadataCheckbox">
+            <br>
+            <label for="blobCheckbox">Change tiers for Blobs:</label>
+            <input type="checkbox" id="blobCheckbox">
+            <br>
+            <label for="volume">No. of files:</label>
+            <input type="text" id="volume">
+            <br>
+            <label for="storageModel">Select storage model:</label>
+            <select id="storageModel">
+                <option value="1">1</option>
+                <option value="3">3</option>
+            </select>
+            <br>
+            <button type="button" onclick="calculateCost()">Calculate cost for changing tier</button>
+        </form>
+        <p id="result"></p>
+    </div>
 
-    <script src="calculator.js"></script>
+    <script>
+        function calculateCost() {
+            try {
+                // Input from checkbuttons
+                const metadataSelected = document.getElementById("metadataCheckbox").checked;
+                const blobSelected = document.getElementById("blobCheckbox").checked;
+
+                // Validate checkbuttons
+                if (!metadataSelected && !blobSelected) {
+                    throw new Error("Please select at least one option for changing tiers.");
+                }
+
+                // Input from volume and storage model
+                const volume = parseFloat(document.getElementById("volume").value);
+                const storageModel = parseInt(document.getElementById("storageModel").value);
+
+                // Validate volume (numbers only)
+                if (isNaN(volume)) {
+                    throw new Error("Volume must be a number.");
+                }
+
+                // Cost calculation based on selected options
+                const costPerUnit = 0.13; // $0.13 per 10,000 units
+
+                let cost = 0;
+                if (metadataSelected && blobSelected) {
+                    cost = (volume * (storageModel === 1 ? 2 : 7) / 10000) * costPerUnit;
+                } else if (blobSelected) {
+                    cost = (volume / 10000) * costPerUnit * (storageModel === 1 ? 1 : 0);
+                }
+
+                document.getElementById("result").textContent = `Estimated cost for changing tier to cool: $${cost.toFixed(2)}`;
+            } catch (error) {
+                document.getElementById("result").textContent = error.message;
+            }
+        }
+    </script>
 </body>
 </html>
