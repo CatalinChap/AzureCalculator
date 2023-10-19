@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Azure Storage Cost Calculator</title>
+</head>
+<body>
+    <h1>Azure Storage Cost Calculator</h1>
+    <form id="costCalculator">
+        <label for="metadataCheckbox">Change tiers for Metadata:</label>
+        <input type="checkbox" id="metadataCheckbox">
+        <br>
+        <label for="blobCheckbox">Change tiers for Blobs:</label>
+        <input type="checkbox" id="blobCheckbox">
+        <br>
+        <label for="volume">No. of files:</label>
+        <input type="text" id="volume">
+        <br>
+        <label for="storageModel">Select storage model:</label>
+        <select id="storageModel">
+            <option value="1">1</option>
+            <option value="3">3</option>
+        </select>
+        <br>
+        <button type="button" onclick="calculateCost()">Calculate cost for changing tier</button>
+    </form>
+    <p id="result"></p>
+
+    <script src="calculator.js"></script>
+</body>
+</html>
